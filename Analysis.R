@@ -13,7 +13,6 @@ MACDFast<<-12
 MACDSlow<<-26
 MACDSig<<-9
 
-
 #create import path
 folder<-"C:/R/yahoo_quote/csv/"
 # create list of all .csv files in folder
@@ -68,17 +67,23 @@ raw2$Signal<-EMA(raw2$MACDdiff,n=MACDSig)
 #Divergence of MACD
 raw2$Divergence<-raw2$MACD-raw2$Signal
 
+#Divergence of KDJ
+raw2$KDJDivergence<-abs(abs(raw2$fastK-raw2$slowD)-abs(raw2$J))
+
 #use SQL to sort data
 raw3<-sqldf("select * from raw2
             order by Symbol, Date desc")
 
 raw3$MaxDate<-max(raw3$Date,na.rm=TRUE)
-drops<-c("Index","MACDFast","MACDSlow","MACDdiff","MaxDate")
+drops<-c("Index","MACDFast","MACDSlow","MACDdiff","MaxDate","fastD")
 
 raw4<-raw3[raw3$Date==raw3$MaxDate,!names(raw3) %in% drops]
 
 raw5<-sqldf("select * from raw4
-            where RSI14<=30 and Divergence between -0.2 and 0.2
-            order by Symbol, Date desc")
+            where Volume>=1000000 and Close>1 and
+            RSI14<=30 and 
+            Divergence between -0.2 and 0.2 and
+            KDJDivergence <=0.2
+            order by Divergence,KDJDivergence")
 
 write.csv(raw5,file = "C:/R/yahoo_quote/output.csv", row.names = FALSE)
