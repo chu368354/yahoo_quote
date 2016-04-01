@@ -1,4 +1,4 @@
-setwd("C:/R/yahoo_quote")
+setwd("D:/R/stock/Auto_Stock")
 library(sqldf)
 library(xlsx)
 
@@ -14,7 +14,7 @@ MACDSlow<<-26
 MACDSig<<-9
 
 #create import path
-folder<-"C:/R/yahoo_quote/csv/"
+folder<-"D:/R/stock/Auto_Stock/csv/"
 # create list of all .csv files in folder
 filelist<-list.files(path=folder,pattern = "*.csv")
 
@@ -86,4 +86,12 @@ raw5<-sqldf("select * from raw4
             KDJDivergence <=0.2
             order by Divergence,KDJDivergence")
 
-write.csv(raw5,file = "C:/R/yahoo_quote/output.csv", row.names = FALSE)
+raw5<-raw5[,c("Symbol","Date","Open","High","Low","Close","Volume","Adj","RSI14","MACD","Signal","Divergence","DIp","DIn","DX","ADX","fastK","slowD","J","KDJDivergence")]
+
+library(jsonlite)
+outputjson<-toJSON(raw5)
+outputjson
+
+write(outputjson,"D:/R/stock/Auto_Stock/output.json")
+
+write.csv(raw5,file = "D:/R/stock/Auto_Stock/output.csv", row.names = FALSE)
