@@ -1,13 +1,14 @@
 #Auto download list of historical data from quantmod
-setwd("C:/R/yahoo_quote/")
-
-#Clean up all file from folder
-file.remove(file.path("C:/R/yahoo_quote/csv/", list.files("C:/R/yahoo_quote/csv/"))) 
-
-startDate<-("2016-01-01")
+setwd("D:/R/stock/Auto_Stock")
 
 #create export path
-outputpath<-"C:/R/yahoo_quote/csv/"
+outputpath<-"D:/R/stock/Auto_Stock/csv/"
+
+#Clean up all file from folder
+file.remove(file.path(outputpath, list.files(outputpath))) 
+
+startDate<-("2014-01-01")
+
 
 library(sqldf)
 library(xlsx)
@@ -19,7 +20,8 @@ library(TTR)
 library(quantmod)
 
 # create list of all .csv files in folder
-rawlist<-read.csv("C:/R/yahoo_quote/list.csv",header=TRUE,sep=",")
+rawlist<-read.csv("D:/R/stock/Auto_Stock/list.csv",header=TRUE,sep=",")
+class(rawlist)
 stocklist<-as.vector(rawlist[,1])
 
 #Export historical data, with error handle message
